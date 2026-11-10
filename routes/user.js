@@ -4,6 +4,9 @@ import authUser from "../controllers/authUser.js";
 import googleAuthCallback from "../controllers/googleAuthCallback.js";
 import refreshToken from "../controllers/refreshToken.js";
 import isUserMiddleware from "../middlewares/isUserMiddleware.js";
+import authEmail from "../controllers/authEmail.js";
+import verifyOtp from "../controllers/verifyOtp.js";
+import resendOtp from "../controllers/resendOtp.js";
 
 const userRoutes = express.Router();
 
@@ -40,6 +43,9 @@ userRoutes.get("/auth/failed", (req, res) => {
 });
 
 userRoutes.post("/refresh", refreshToken);
+userRoutes.post("/auth/email", authEmail);
+userRoutes.post("/auth/verify-otp", verifyOtp);
+userRoutes.post("/auth/resend-otp", resendOtp);
 
 userRoutes.get("/me", isUserMiddleware, (req, res) => {
   return res.status(200).json({

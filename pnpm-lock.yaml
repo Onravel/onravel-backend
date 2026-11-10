@@ -166,6 +166,9 @@ importers:
 
   .:
     dependencies:
+      '@sendbyte/node':
+        specifier: ^0.3.0
+        version: 0.3.0
       cookie-parser:
         specifier: ^1.4.7
         version: 1.4.7
@@ -190,11 +193,18 @@ importers:
       passport-google-oauth20:
         specifier: ^2.0.0
         version: 2.0.0
+      validator:
+        specifier: ^13.15.35
+        version: 13.15.35
 
 packages:
 
   '@mongodb-js/saslprep@1.6.1':
     resolution: {integrity: sha512-D4CQtk9IwjCLAvCf1xvHEod3960q8XMUzfmdRU9qjUNlHnesGuTOvJcOTaPm9koZ1caUKA2aTbszZiAkcmSgmg==}
+
+  '@sendbyte/node@0.3.0':
+    resolution: {integrity: sha512-zVSAi5l1PNMxU29DQu9BrlkKyWMWAjlnH414uADYTUFh9E1IOvmZHH5J6N5m8ffp+EPSgablMBWxEQOsPQSwIw==}
+    engines: {node: '>=18'}
 
   '@standard-schema/spec@1.1.0':
     resolution: {integrity: sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==}
@@ -618,6 +628,10 @@ packages:
     resolution: {integrity: sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA==}
     engines: {node: '>= 0.4.0'}
 
+  validator@13.15.35:
+    resolution: {integrity: sha512-TQ5pAGhd5whStmqWvYF4OjQROlmv9SMFVt37qoCBdqRffuuklWYQlCNnEs2ZaIBD1kZRNnikiZOS1eqgkar0iw==}
+    engines: {node: '>= 0.10'}
+
   vary@1.1.2:
     resolution: {integrity: sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==}
     engines: {node: '>= 0.8'}
@@ -638,6 +652,8 @@ snapshots:
   '@mongodb-js/saslprep@1.6.1':
     dependencies:
       sparse-bitfield: 3.0.3
+
+  '@sendbyte/node@0.3.0': {}
 
   '@standard-schema/spec@1.1.0': {}
 
@@ -1082,6 +1098,8 @@ snapshots:
   unpipe@1.0.0: {}
 
   utils-merge@1.0.1: {}
+
+  validator@13.15.35: {}
 
   vary@1.1.2: {}
 
