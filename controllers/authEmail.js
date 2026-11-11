@@ -56,7 +56,7 @@ export default async function authEmail(req, res) {
       },
       {
         upsert: true,
-        new: true,
+        returnDocument: "after",
         setDefaultsOnInsert: true,
       }
     );

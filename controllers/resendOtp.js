@@ -79,7 +79,7 @@ export default async function resendOtp(req, res) {
           verified: false,
         },
       },
-      { new: true }
+      { returnDocument: "after", }
     );
 
     if (!updatedOtp) {
