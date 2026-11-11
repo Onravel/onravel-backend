@@ -8,7 +8,7 @@ const googleAuthCallback = async (req, res) => {
     const {  refreshToken } = await generateTokens(user);
 
     // Keep the refresh token inaccessible to frontend JavaScript.
-    sendHttpOnlyCookie(res, "refreshToken", refreshToken)
+    sendHttpOnlyCookie(res,  refreshToken);
 
     // The browser navigates to the Next.js callback page.
     return res.redirect(
