@@ -1,4 +1,5 @@
 import generateTokens from "../utils/generateTokens.js";
+import sendHttpOnlyCookie from "../utils/sendHttpOnlyCookie.js";
 
 // Handle successful Google authentication.
 const authUser = async (req, res) => {
@@ -13,17 +14,18 @@ const authUser = async (req, res) => {
     // The refresh token's hash is also saved in MongoDB.
     const { accessToken, refreshToken } = await generateTokens(user);
 
-    // Return both tokens and the user information.
+    sendHttpOnlyCookie(res,  refreshToken);
+
+    // accessToken is used to  call /me endpoint to get user details. 
     return res.status(isNewUser ? 201 : 200).json({
       success: true,
       isNewUser,
       message: isNewUser
         ? "Account created successfully."
         : "Signed in successfully.",
-      user,
       accessToken,
-      refreshToken,
     });
+
   } catch (error) {
     console.error("Authentication error:", error);
 

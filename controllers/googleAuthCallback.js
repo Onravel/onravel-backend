@@ -1,21 +1,14 @@
 
 import generateTokens from "../utils/generateTokens.js";
+import sendHttpOnlyCookie from "../utils/sendHttpOnlyCookie.js";
 
 const googleAuthCallback = async (req, res) => {
   try {
     const user = req.user;
-    const isNewUser = req.authInfo?.isNewUser ?? false;
-
-    const { accessToken, refreshToken } = await generateTokens(user);
+    const {  refreshToken } = await generateTokens(user);
 
     // Keep the refresh token inaccessible to frontend JavaScript.
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-      path: "/",
-    });
+    sendHttpOnlyCookie(res, "refreshToken", refreshToken)
 
     // The browser navigates to the Next.js callback page.
     return res.redirect(

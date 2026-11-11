@@ -4,6 +4,7 @@ import AuthAccount from "../models/AuthAccount.js";
 import Otp from "../models/Otp.js";
 import User from "../models/User.js";
 import generateTokens from "../utils/generateTokens.js";
+import sendHttpOnlyCookie from "../utils/sendHttpOnlyCookie.js";
 
 const MAX_OTP_ATTEMPTS = 5;
 
@@ -50,10 +51,7 @@ export default async function verifyOtp(req, res) {
       });
     }
 
-    const submittedHash = crypto
-      .createHash("sha256")
-      .update(otp)
-      .digest();
+    const submittedHash = crypto.createHash("sha256").update(otp).digest();
     const storedHash = Buffer.from(otpRecord.otpHash, "hex");
     const isValidOtp =
       storedHash.length === submittedHash.length &&
@@ -69,7 +67,7 @@ export default async function verifyOtp(req, res) {
           attempts: { $lt: MAX_OTP_ATTEMPTS },
         },
         { $inc: { attempts: 1 } },
-        { new: true }
+        { returnDocument: "after" },
       );
 
       const currentOtp = updatedOtp || (await Otp.findById(otpRecord._id));
@@ -95,7 +93,7 @@ export default async function verifyOtp(req, res) {
         attempts: { $lt: MAX_OTP_ATTEMPTS },
       },
       { $set: { verified: true } },
-      { new: true }
+      { returnDocument: "after" },
     );
 
     if (!claimedOtp) {
@@ -113,14 +111,13 @@ export default async function verifyOtp(req, res) {
       });
     }
 
-    const user = await User.findOne({ email });
+    let user = await User.findOne({ email });
+    const isNewUser = !user;
 
     if (!user) {
-      await Otp.deleteOne({ _id: claimedOtp._id });
-      return res.status(422).json({
-        success: false,
-        message:
-          "Email sign-up requires a full name, but this request currently only collects an email address.",
+      user = await User.create({
+        email,
+        emailVerified: new Date(),
       });
     }
 
@@ -173,17 +170,17 @@ export default async function verifyOtp(req, res) {
 
     const { accessToken, refreshToken } = await generateTokens(user);
 
+    sendHttpOnlyCookie(res, refreshToken);
+
     return res.status(200).json({
       success: true,
       isNewUser: false,
       message: "Signed in successfully.",
-      user,
       accessToken,
-      refreshToken,
     });
+
   } catch (error) {
     console.error("Email OTP authentication error:", error);
-
     return res.status(500).json({
       success: false,
       message: "Authentication failed.",
