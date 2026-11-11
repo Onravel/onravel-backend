@@ -7,6 +7,7 @@ import isUserMiddleware from "../middlewares/isUserMiddleware.js";
 import authEmail from "../controllers/authEmail.js";
 import verifyOtp from "../controllers/verifyOtp.js";
 import resendOtp from "../controllers/resendOtp.js";
+import logOut from "../controllers/logOut.js";
 
 const userRoutes = express.Router();
 
@@ -46,6 +47,7 @@ userRoutes.post("/refresh", refreshToken);
 userRoutes.post("/auth/email", authEmail);
 userRoutes.post("/auth/verify-otp", verifyOtp);
 userRoutes.post("/auth/resend-otp", resendOtp);
+userRoutes.post("/logout", logOut);
 
 userRoutes.get("/me", isUserMiddleware, (req, res) => {
   return res.status(200).json({
