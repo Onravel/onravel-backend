@@ -1,5 +1,6 @@
 import generateTokens from "../utils/generateTokens.js";
 import sendHttpOnlyCookie from "../utils/sendHttpOnlyCookie.js";
+import Analytics from "../models/admin/analytics/Analytics.js";
 
 // Handle successful Google authentication.
 const authUser = async (req, res) => {
@@ -10,13 +11,26 @@ const authUser = async (req, res) => {
     // Determine whether Passport just created this account.
     const isNewUser = req.authInfo?.isNewUser ?? false;
 
+    //update the total user count in analytics if the user is new
+    if (isNewUser) {
+      await Analytics.updateOne(
+        { _id: "onravel_analytics" },
+        {
+          $inc: {
+            "user.total": 1,
+          },
+        },
+        { upsert: true },
+      );
+    }
+
     // Generate access and refresh tokens.
     // The refresh token's hash is also saved in MongoDB.
     const { accessToken, refreshToken } = await generateTokens(user);
 
-    sendHttpOnlyCookie(res,  refreshToken);
+    sendHttpOnlyCookie(res, refreshToken);
 
-    // accessToken is used to  call /me endpoint to get user details. 
+    // accessToken is used to  call /me endpoint to get user details.
     return res.status(isNewUser ? 201 : 200).json({
       success: true,
       isNewUser,
@@ -25,7 +39,6 @@ const authUser = async (req, res) => {
         : "Signed in successfully.",
       accessToken,
     });
-
   } catch (error) {
     console.error("Authentication error:", error);
 

@@ -5,6 +5,7 @@ import Otp from "../models/Otp.js";
 import User from "../models/User.js";
 import generateTokens from "../utils/generateTokens.js";
 import sendHttpOnlyCookie from "../utils/sendHttpOnlyCookie.js";
+import Analytics from "../models/admin/analytics/Analytics.js";
 
 const MAX_OTP_ATTEMPTS = 5;
 
@@ -119,6 +120,16 @@ export default async function verifyOtp(req, res) {
         email,
         emailVerified: new Date(),
       });
+
+      await Analytics.updateOne(
+        { _id: "onravel_analytics" },
+        {
+          $inc: {
+            "user.total": 1,
+          },
+        },
+        { upsert: true },
+      );
     }
 
     if (!user.isActive) {
@@ -178,7 +189,6 @@ export default async function verifyOtp(req, res) {
       message: "Signed in successfully.",
       accessToken,
     });
-
   } catch (error) {
     console.error("Email OTP authentication error:", error);
     return res.status(500).json({
