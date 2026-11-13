@@ -55,46 +55,40 @@ const userSchema = new mongoose.Schema(
     },
 
     onboarding: {
-      heardAboutUs: {
-        type: String,
-        enum: [
-          "instagram",
-          "tiktok",
-          "facebook",
-          "google",
-          "friend",
-          "family",
-          "other",
-        ],
-        default: null,
-      },
+  heardAboutUs: {
+    type: String,
+    enum: [
+      "instagram",
+      "tiktok",
+      "facebook",
+      "google",
+      "website",
+      "friend",
+      "family",
+      "other",
+    ],
+    default: "",
+  },
 
-      heardAboutUsOther: {
-        type: String,
-        trim: true,
-        default: null,
-      },
+  completed: {
+    type: Boolean,
+    default: false,
+  },
 
-      completed: {
-        type: Boolean,
-        default: false,
-      },
-
-      completedAt: {
-        type: Date,
-        default: null,
-      },
-    },
+  completedAt: {
+    type: Date,
+    default: null,
+  },
+},
 
     lastLoginAt: {
       type: Date,
       default: null,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
-const User =
-  mongoose.models.User || mongoose.model("User", userSchema);
+const User = mongoose.models.User || mongoose.model("User", userSchema);
 
 export default User;
