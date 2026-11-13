@@ -1,5 +1,5 @@
-
 import { parsePhoneNumberFromString } from "libphonenumber-js";
+import updateUserGenderAnalytics from "../../service/updateUserGenderAnalytics.js";
 
 const discoverySources = [
   "instagram",
@@ -14,8 +14,14 @@ const discoverySources = [
 
 const allowedSex = ["male", "female", "prefer_not_to_say"];
 
+// Validates the onboarding request and prevents repeated completion.
+// STEP 1: Validates and saves the user's personal information.
+// Handles validation errors and unexpected server failures.
+// STEP 2: Validates discovery source and completes onboarding.
+// Updates gender analytics after successful completion.
+
+
 const updateOnboarding = async (req, res) => {
-  console.log("hit");
   try {
     const user = req.user;
     const body = req.body;
@@ -24,6 +30,13 @@ const updateOnboarding = async (req, res) => {
       return res.status(400).json({
         success: false,
         message: "Invalid request body.",
+      });
+    }
+
+    if (user.onboarding.completed) {
+      return res.status(400).json({
+        success: false,
+        message: "Onboarding has already been completed.",
       });
     }
 
@@ -67,6 +80,8 @@ const updateOnboarding = async (req, res) => {
       user.onboarding.completedAt = new Date();
 
       await user.save();
+
+      await updateUserGenderAnalytics(user);
 
       return res.status(200).json({
         success: true,
