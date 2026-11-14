@@ -5,7 +5,7 @@ import Otp from "../models/Otp.js";
 import User from "../models/User.js";
 import generateTokens from "../utils/generateTokens.js";
 import sendHttpOnlyCookie from "../utils/sendHttpOnlyCookie.js";
-import Analytics from "../models/admin/analytics/Analytics.js";
+import Analytics from "../models/admin/Analytics.js";
 
 const MAX_OTP_ATTEMPTS = 5;
 

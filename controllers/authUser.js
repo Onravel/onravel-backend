@@ -1,6 +1,6 @@
 import generateTokens from "../utils/generateTokens.js";
 import sendHttpOnlyCookie from "../utils/sendHttpOnlyCookie.js";
-import Analytics from "../models/admin/analytics/Analytics.js";
+import Analytics from "../models/admin/Analytics.js";
 
 // Handle successful Google authentication.
 const authUser = async (req, res) => {

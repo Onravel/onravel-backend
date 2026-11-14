@@ -1,4 +1,4 @@
-import Analytics from "../models/admin/analytics/Analytics.js";
+import Analytics from "../models/admin/Analytics.js";
 
 const updateUserGenderAnalytics = async (user) => {
   try {
