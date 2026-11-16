@@ -1,7 +1,6 @@
 import express from "express";
 import passport from "passport";
 import authUser from "../controllers/authUser.js";
-import googleAuthCallback from "../controllers/googleAuthCallback.js";
 import refreshToken from "../controllers/refreshToken.js";
 import isUserMiddleware from "../middlewares/isUserMiddleware.js";
 import authEmail from "../controllers/authEmail.js";
@@ -12,8 +11,6 @@ import updateOnboarding from "../controllers/onboarding/updateOnboarding.js";
 
 const userRoutes = express.Router();
 
-// Existing authentication route.
-userRoutes.get("/auth", authUser);
 
 // Start Google authentication.
 userRoutes.get(
@@ -33,7 +30,7 @@ userRoutes.get(
     session: false,
     failureRedirect: "/api/user/auth/failed",
   }),
-  googleAuthCallback
+  authUser
 );
 
 // Authentication failure.

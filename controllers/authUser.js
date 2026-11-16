@@ -1,17 +1,22 @@
+
 import generateTokens from "../utils/generateTokens.js";
 import sendHttpOnlyCookie from "../utils/sendHttpOnlyCookie.js";
 import Analytics from "../models/admin/Analytics.js";
 
-// Handle successful Google authentication.
 const authUser = async (req, res) => {
   try {
-    // Passport attaches the authenticated user to req.user.
     const user = req.user;
 
-    // Determine whether Passport just created this account.
+    if (!user || !user.isActive) {
+      return res.status(401).json({
+        success: false,
+        message: "Authentication failed.",
+      });
+    }
+
     const isNewUser = req.authInfo?.isNewUser ?? false;
 
-    //update the total user count in analytics if the user is new
+    // Update analytics when a new storefront account is created.
     if (isNewUser) {
       await Analytics.updateOne(
         { _id: "onravel_analytics" },
@@ -25,15 +30,25 @@ const authUser = async (req, res) => {
     }
 
     // Generate access and refresh tokens.
-    // The refresh token's hash is also saved in MongoDB.
     const { accessToken, refreshToken } = await generateTokens(user);
 
+    // Store refresh token in an HttpOnly cookie.
     sendHttpOnlyCookie(res, refreshToken);
 
-    // accessToken is used to  call /me endpoint to get user details.
+    // Google OAuth browser redirect.
+    if (req.path === "/auth/google/callback") {
+      const isAdmin = ["admin", "super_admin"].includes(user.role);
+
+      if (isAdmin) {
+        return res.redirect("http://localhost:5173/admin");
+      }
+
+      return res.redirect("http://localhost:3000/auth/callback");
+    }
+
+    // Standard JSON authentication response.
     return res.status(isNewUser ? 201 : 200).json({
       success: true,
-      isNewUser,
       message: isNewUser
         ? "Account created successfully."
         : "Signed in successfully.",
@@ -41,6 +56,12 @@ const authUser = async (req, res) => {
     });
   } catch (error) {
     console.error("Authentication error:", error);
+
+    if (req.path === "/auth/google/callback") {
+      return res.redirect(
+        "http://localhost:3000/auth?error=authentication_failed",
+      );
+    }
 
     return res.status(500).json({
       success: false,
