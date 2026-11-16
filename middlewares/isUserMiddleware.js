@@ -31,21 +31,30 @@ const isUserMiddleware = async (req, res, next) => {
     req.user = user;
 
     next();
-  } catch (error) {
-    if (error.name === "TokenExpiredError" || error.name === "JsonWebTokenError") {
-      return res.status(401).json({
-        success: false,
-        message: "Invalid or expired access token.",
-      });
-    }
-
-    console.error("Authentication middleware error:", error);
-
-    return res.status(500).json({
+  }  catch (error) {
+  if (error.name === "TokenExpiredError") {
+    return res.status(401).json({
       success: false,
-      message: "Unable to authenticate user.",
+      code: "ACCESS_TOKEN_EXPIRED",
+      message: "Access token has expired.",
     });
   }
+
+  if (error.name === "JsonWebTokenError" || error.name === "NotBeforeError") {
+    return res.status(401).json({
+      success: false,
+      code: "INVALID_ACCESS_TOKEN",
+      message: "Invalid access token.",
+    });
+  }
+
+  console.error("Authentication middleware error:", error);
+
+  return res.status(500).json({
+    success: false,
+    message: "Unable to authenticate user.",
+  });
+}
 };
 
 export default isUserMiddleware;
