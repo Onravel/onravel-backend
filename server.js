@@ -1,6 +1,9 @@
 import "dotenv/config";
 import express from "express";
+
 import userRoutes from './routes/user.js';
+import managementRoutes from "./routes/admin/management.js";
+
 import passport from './config/passport.js';
 import connectDB from './config/db.js';
 import cors from 'cors';
@@ -14,7 +17,10 @@ const app = express()
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "http://localhost:3000",
+       origin: [
+      "http://localhost:3000",
+      "http://localhost:5173",
+    ],
     credentials: true,
   })
 );
@@ -31,5 +37,6 @@ app.get('/', (req, res)=>{
 })
 
 app.use('/api/user', userRoutes);
+app.use('/api/admin/management', managementRoutes);
 
 app.listen(PORT, ()=>{console.log(`backend running at ${PORT}`)})

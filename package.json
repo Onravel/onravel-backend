@@ -20,6 +20,7 @@
   "packageManager": "pnpm@12.16.1",
   "dependencies": {
     "@sendbyte/node": "^0.3.0",
+    "cloudinary": "^2.11.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
     "dotenv": "^18.0.9",
@@ -27,6 +28,8 @@
     "jsonwebtoken": "^9.0.3",
     "libphonenumber-js": "^1.13.16",
     "mongoose": "^9.11.4",
+    "multer": "^2.5.0",
+    "multer-storage-cloudinary": "^4.0.0",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
     "validator": "^13.15.35"
