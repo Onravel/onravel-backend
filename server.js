@@ -1,9 +1,7 @@
 import "dotenv/config";
 import express from "express";
-
 import userRoutes from './routes/user.js';
 import managementRoutes from "./routes/admin/management.js";
-
 import passport from './config/passport.js';
 import connectDB from './config/db.js';
 import cors from 'cors';
