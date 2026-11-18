@@ -6,6 +6,7 @@ import isUserMiddleware from "../../middlewares/isUserMiddleware.js"
 import isAdminMiddleware from "../../middlewares/isAdminMiddleware.js";
 
 import createCategory from "../../controllers/admin/management/createCategory.js";
+import getCategories from "../../controllers/admin/management/getCategories.js";
 
 const managementRoutes = express.Router();
 
@@ -18,5 +19,6 @@ managementRoutes.post(
   upload.single("video"),
   createCategory
 );
+managementRoutes.get("/categories", getCategories);
 
 export default managementRoutes;
