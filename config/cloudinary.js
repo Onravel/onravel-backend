@@ -17,20 +17,6 @@ const storage = new CloudinaryStorage({
   params: {
     folder: 'onravel',
     resource_type: "auto",
-    allowed_formats: [  // Images
-  "jpg",
-  "jpeg",
-  "png",
-  "webp",
-  "heic",
-  "heif",
- 
-  // Videos
-  "mp4",
-  "mov",
-
-  // Documents
-  "pdf",], 
   },
 });
 
