@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import Product from "../../../models/Product.js";
 import Management from "../../../models/admin/Management.js";
+import updateProductAnalytics from "./updateProductAnalytics.js";
 
 const MANAGEMENT_ID = "onravel_management";
 
@@ -174,6 +175,16 @@ const editProduct = async (req, res) => {
           url: null,
           publicId: null,
         };
+
+        try {
+  await updateProductAnalytics({
+    action: "edit",
+    previousCategoryId: existingProduct.category,
+    categoryId: selectedCategory._id,
+  });
+} catch (analyticsError) {
+  console.error("Product analytics update failed:", analyticsError);
+}
 
     return res.status(200).json({
       success: true,

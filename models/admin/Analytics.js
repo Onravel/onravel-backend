@@ -26,17 +26,32 @@ const analyticsSchema = new mongoose.Schema(
       },
     },
 
-    product: {},
+    product: {
+      total: { type: Number, default: 0 },
+
+      // Products created per calendar month: "2026-11": 24
+      monthlyCreated: {
+        type: Map,
+        of: Number,
+        default: {},
+      },
+
+      // Product counts keyed by category ID.
+      categoryCounts: {
+        type: Map,
+        of: Number,
+        default: {},
+      },
+    },
 
     order: {},
 
     transaction: {},
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 const Analytics =
-  mongoose.models.Analytics ||
-  mongoose.model("Analytics", analyticsSchema);
+  mongoose.models.Analytics || mongoose.model("Analytics", analyticsSchema);
 
 export default Analytics;

@@ -1,8 +1,8 @@
-
 import mongoose from "mongoose";
 import Product from "../../../models/Product.js";
 import Management from "../../../models/admin/Management.js";
 import { cloudinary } from "../../../config/cloudinary.js";
+import updateProductAnalytics from "./updateProductAnalytics.js";
 
 const MANAGEMENT_ID = "onravel_management";
 
@@ -56,17 +56,13 @@ const parseArray = (value, fieldName) => {
 
 const validateOptions = (selected, available, fieldName) => {
   const options = new Map(
-    available.map((item) => [item.trim().toLowerCase(), item])
+    available.map((item) => [item.trim().toLowerCase(), item]),
   );
 
-  const invalid = selected.filter(
-    (item) => !options.has(item.toLowerCase())
-  );
+  const invalid = selected.filter((item) => !options.has(item.toLowerCase()));
 
   if (invalid.length) {
-    const error = new Error(
-      `Invalid ${fieldName}: ${invalid.join(", ")}.`
-    );
+    const error = new Error(`Invalid ${fieldName}: ${invalid.join(", ")}.`);
     error.statusCode = 400;
     throw error;
   }
@@ -92,8 +88,8 @@ const cleanupUploads = async (files = {}) => {
       .map(({ publicId, resourceType }) =>
         cloudinary.uploader.destroy(publicId, {
           resource_type: resourceType,
-        })
-      )
+        }),
+      ),
   );
 };
 
@@ -174,8 +170,9 @@ const createProduct = async (req, res) => {
     const occasions = parseArray(req.body.occasions, "Occasions");
 
     // 5. Retrieve Management options.
-    const management = await Management.findById(MANAGEMENT_ID)
-      .select("categories attributes occasions");
+    const management = await Management.findById(MANAGEMENT_ID).select(
+      "categories attributes occasions",
+    );
 
     if (!management) {
       return res.status(400).json({
@@ -198,13 +195,13 @@ const createProduct = async (req, res) => {
     const validAttributes = validateOptions(
       attributes,
       management.attributes || [],
-      "attributes"
+      "attributes",
     );
 
     const validOccasions = validateOptions(
       occasions,
       management.occasions || [],
-      "occasions"
+      "occasions",
     );
 
     // 8. Generate a unique slug.
@@ -246,8 +243,7 @@ const createProduct = async (req, res) => {
     const product = await Product.create({
       name: name.trim(),
       slug,
-      description:
-        typeof description === "string" ? description.trim() : "",
+      description: typeof description === "string" ? description.trim() : "",
       price: Number(price),
       category: selectedCategory._id,
       attributes: validAttributes,
@@ -256,6 +252,17 @@ const createProduct = async (req, res) => {
     });
 
     productCreated = true;
+
+    // 11. Update product analytics.
+// 11. Update product analytics.
+try {
+  await updateProductAnalytics({
+    action: "create",
+    categoryId: selectedCategory._id,
+  });
+} catch (error) {
+  console.error("Product analytics update failed:", error);
+}
 
     return res.status(201).json({
       success: true,
