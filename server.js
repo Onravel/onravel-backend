@@ -1,7 +1,11 @@
 import "dotenv/config";
 import express from "express";
+
+// Routes
 import userRoutes from './routes/user.js';
 import managementRoutes from "./routes/admin/management.js";
+import productRoutes from "./routes/admin/product.js"
+
 import passport from './config/passport.js';
 import connectDB from './config/db.js';
 import cors from 'cors';
@@ -36,5 +40,6 @@ app.get('/', (req, res)=>{
 
 app.use('/api/user', userRoutes);
 app.use('/api/admin/management', managementRoutes);
+app.use('/api/product', productRoutes);
 
 app.listen(PORT, ()=>{console.log(`backend running at ${PORT}`)})
