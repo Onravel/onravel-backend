@@ -3,6 +3,7 @@ import multer from "multer";
 
 import { storage } from "../../config/cloudinary.js";
 import createProduct from "../../controllers/admin/product/createProduct.js";
+import editProduct from "../../controllers/admin/product/editProduct.js";
 import getProducts from "../../controllers/admin/product/getProducts.js";
 import isAdminMiddleware from '../../middlewares/isAdminMiddleware.js'
 import isUserMiddleware from "../../middlewares/isUserMiddleware.js";
@@ -15,6 +16,13 @@ productRoutes.get(
   isUserMiddleware,
   isAdminMiddleware,
   getProducts
+);
+
+productRoutes.put(
+  "/:productId",
+  isUserMiddleware,
+  isAdminMiddleware,
+  editProduct
 );
 
 productRoutes.post(
