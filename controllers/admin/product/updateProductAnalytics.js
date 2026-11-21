@@ -1,5 +1,5 @@
 
-import Analytics from "../../models/admin/Analytics.js";
+import Analytics from "../../../models/admin/Analytics.js"
 
 const ANALYTICS_ID = "onravel_analytics";
 
